@@ -1,12 +1,10 @@
-package com.example.docker.docker.features.user;
+package com.example.docker.docker.features.user.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "users")
-public class User {
+@Entity(name = "User")
+@Table(name = "users")
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -14,10 +12,10 @@ public class User {
     private String name;
     private int age;
 
-    public User() {
+    public UserEntity() {
     }
 
-    public User(int id, String email, String name, int age) {
+    public UserEntity(int id, String email, String name, int age) {
         this.id = id;
         this.email = email;
         this.name = name;
