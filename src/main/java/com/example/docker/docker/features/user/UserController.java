@@ -1,7 +1,6 @@
 package com.example.docker.docker.features.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,25 +14,35 @@ public class UserController {
     UserRepository userRepository;
 
     @PostMapping(path = "/users/add")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody User user) {
         User savedUser = userRepository.save(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        UserResponse.UserSuccess response = new UserResponse.UserSuccess("User saved successfully", 201, savedUser);
+        return UserResponse.mapResponseEntity(response);
     }
 
     @GetMapping(path = "/users/getAll")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        UserResponse.UsersSuccess response = new UserResponse.UsersSuccess("Users retrieved", 200, users);
+        return UserResponse.mapResponseEntity(response);
     }
 
     @DeleteMapping(path = "/users/{userId}/delete")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("userId") String userId) {
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable("userId") String userId) {
         boolean userExist = userRepository.existsById(Integer.valueOf(userId));
         if (userExist) {
             userRepository.deleteById(Integer.valueOf(userId));
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            UserResponse.UserDeletedSuccessfully response =
+                    new UserResponse.UserDeletedSuccessfully("Users with id: " + userId + " deleted", 200);
+
+            return UserResponse.mapResponseEntity(response);
+
         } else {
-            return new ResponseEntity<>(false, HttpStatus.CONFLICT);
+            UserResponse.UserGenericError response =
+                    new UserResponse.UserGenericError("Error while deleting user with id: " + userId, 516);
+
+            return UserResponse.mapResponseEntity(response);
+
         }
     }
 }
