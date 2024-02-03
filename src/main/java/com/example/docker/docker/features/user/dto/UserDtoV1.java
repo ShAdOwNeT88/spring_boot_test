@@ -1,22 +1,16 @@
-package com.example.docker.docker.features.user.entities;
+package com.example.docker.docker.features.user.dto;
 
-import com.example.docker.docker.features.user.dto.UserDtoV1;
-import jakarta.persistence.*;
-
-@Entity(name = "User")
-@Table(name = "users")
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDtoV1 {
     private int id;
     private String email;
     private String name;
     private int age;
 
-    public UserEntity() {
+    public UserDtoV1() {
     }
 
-    public UserEntity(String email, String name, int age) {
+    public UserDtoV1(int id, String email, String name, int age) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.age = age;
@@ -52,9 +46,5 @@ public class UserEntity {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public UserDtoV1 toDto() {
-        return new UserDtoV1(this.id, this.email, this.name, this.age);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.docker.docker.features.user;
 
-import com.example.docker.docker.features.user.entities.UserEntity;
+import com.example.docker.docker.features.user.dto.UserDtoV1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,37 +13,22 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    UserServiceV1 userService;
 
     @PostMapping(path = "/users/add")
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity userEntity) {
-        UserEntity savedUserEntity = userRepository.save(userEntity);
-        return new ResponseEntity<>(savedUserEntity, HttpStatus.OK);
+    public ResponseEntity<UserDtoV1> createUser(@RequestBody UserDtoV1 userDtoV1) {
+        UserDtoV1 savedUser = userService.createUser(userDtoV1);
+        return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 
     @GetMapping(path = "/users/getAll")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
-        List<UserEntity> userEntities = userRepository.findAll();
-        return new ResponseEntity<>(userEntities, HttpStatus.OK);
+    public ResponseEntity<List<UserDtoV1>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/users/{userId}/delete")
     public ResponseEntity<UserResponse> deleteUser(@PathVariable("userId") String userId) {
-        boolean userExist = userRepository.existsById(Integer.valueOf(userId));
-        if (userExist) {
-            userRepository.deleteById(Integer.valueOf(userId));
-            UserResponse.UserDeletedSuccessfully response =
-                    new UserResponse.UserDeletedSuccessfully("Users with id: " + userId + " deleted");
-
-            return UserResponse.mapResponseEntity(response);
-
-        } else {
-            UserResponse.UserGenericError response =
-                    new UserResponse.UserGenericError("Error while deleting user with id: " + userId);
-
-            return UserResponse.mapResponseEntity(response);
-
-        }
+        return userService.requestDeleteUser(Integer.valueOf(userId));
     }
 }
  
