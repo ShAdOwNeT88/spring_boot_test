@@ -1,10 +1,7 @@
 package com.example.docker.docker.features.user;
 
-import com.example.docker.docker.features.user.entities.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public class UserResponse {
     String statusDescription;
@@ -37,40 +34,6 @@ public class UserResponse {
             return new ResponseEntity<>(response, status);
         } else {
             return new ResponseEntity<>(response, HttpStatus.I_AM_A_TEAPOT);
-        }
-    }
-
-    static class UserSuccess extends UserResponse {
-        UserEntity userEntity;
-
-        public UserEntity getUser() {
-            return userEntity;
-        }
-
-        public void setUser(UserEntity userEntity) {
-            this.userEntity = userEntity;
-        }
-
-        public UserSuccess(String statusDescription, UserEntity usr) {
-            super(statusDescription, HttpStatus.OK.value());
-            this.userEntity = usr;
-        }
-    }
-
-    static class UsersSuccess extends UserResponse {
-        List<UserEntity> userEntities;
-
-        public List<UserEntity> getUsers() {
-            return userEntities;
-        }
-
-        public void setUsers(List<UserEntity> userEntities) {
-            this.userEntities = userEntities;
-        }
-
-        public UsersSuccess(String statusDescription, List<UserEntity> usrs) {
-            super(statusDescription, HttpStatus.OK.value());
-            this.userEntities = usrs;
         }
     }
 
