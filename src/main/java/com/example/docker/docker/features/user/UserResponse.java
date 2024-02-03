@@ -1,5 +1,6 @@
 package com.example.docker.docker.features.user;
 
+import com.example.docker.docker.features.user.entities.UserEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -40,48 +41,48 @@ public class UserResponse {
     }
 
     static class UserSuccess extends UserResponse {
-        User user;
+        UserEntity userEntity;
 
-        public User getUser() {
-            return user;
+        public UserEntity getUser() {
+            return userEntity;
         }
 
-        public void setUser(User user) {
-            this.user = user;
+        public void setUser(UserEntity userEntity) {
+            this.userEntity = userEntity;
         }
 
-        public UserSuccess(String statusDescription, int statusCode, User usr) {
-            super(statusDescription, statusCode);
-            this.user = usr;
+        public UserSuccess(String statusDescription, UserEntity usr) {
+            super(statusDescription, HttpStatus.OK.value());
+            this.userEntity = usr;
         }
     }
 
     static class UsersSuccess extends UserResponse {
-        List<User> users;
+        List<UserEntity> userEntities;
 
-        public List<User> getUsers() {
-            return users;
+        public List<UserEntity> getUsers() {
+            return userEntities;
         }
 
-        public void setUsers(List<User> users) {
-            this.users = users;
+        public void setUsers(List<UserEntity> userEntities) {
+            this.userEntities = userEntities;
         }
 
-        public UsersSuccess(String statusDescription, int statusCode, List<User> usrs) {
-            super(statusDescription, statusCode);
-            this.users = usrs;
+        public UsersSuccess(String statusDescription, List<UserEntity> usrs) {
+            super(statusDescription, HttpStatus.OK.value());
+            this.userEntities = usrs;
         }
     }
 
     static class UserDeletedSuccessfully extends UserResponse {
-        public UserDeletedSuccessfully(String statusDescription, int statusCode) {
-            super(statusDescription, statusCode);
+        public UserDeletedSuccessfully(String statusDescription) {
+            super(statusDescription, HttpStatus.NO_CONTENT.value());
         }
     }
 
     static class UserGenericError extends UserResponse {
-        public UserGenericError(String statusDescription, int statusCode) {
-            super(statusDescription, statusCode);
+        public UserGenericError(String statusDescription) {
+            super(statusDescription, HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 }
