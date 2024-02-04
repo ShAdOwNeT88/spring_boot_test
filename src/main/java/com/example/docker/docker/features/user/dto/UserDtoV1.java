@@ -1,9 +1,14 @@
 package com.example.docker.docker.features.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDtoV1 {
     private int id;
+    @NotBlank
     private String email;
+    @NotBlank
     private String name;
+    @NotBlank
     private int age;
 
     public UserDtoV1() {
@@ -11,6 +16,12 @@ public class UserDtoV1 {
 
     public UserDtoV1(int id, String email, String name, int age) {
         this.id = id;
+        this.email = email;
+        this.name = name;
+        this.age = age;
+    }
+
+    public UserDtoV1(String email, String name, int age) {
         this.email = email;
         this.name = name;
         this.age = age;

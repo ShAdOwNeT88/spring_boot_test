@@ -9,8 +9,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "age", nullable = false)
     private int age;
 
     public UserEntity() {

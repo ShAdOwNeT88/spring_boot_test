@@ -1,5 +1,6 @@
 package com.example.docker.docker.features.user;
 
+import com.example.docker.docker.features.user.dto.CreateUserRequestV1;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
 import com.example.docker.docker.features.user.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,10 @@ public class UserServiceV1 {
     @Autowired
     UserRepository userRepository;
 
-    UserDtoV1 createUser(UserDtoV1 userCreationRequest) {
+    UserDtoV1 createUser(CreateUserRequestV1 userCreationRequest) {
         UserEntity userToSave = new UserEntity(userCreationRequest.getEmail(), userCreationRequest.getName(), userCreationRequest.getAge());
-        UserEntity savedUserEntity = userRepository.save(userToSave);
-        return savedUserEntity.toDto();
+            UserEntity savedUserEntity = userRepository.save(userToSave);
+            return savedUserEntity.toDto();
     }
 
     ResponseEntity<UserResponse> requestDeleteUser(int userId) {
@@ -25,7 +26,7 @@ public class UserServiceV1 {
         if (userExist) {
             userRepository.deleteById(userId);
             UserResponse.UserDeletedSuccessfully response =
-                    new UserResponse.UserDeletedSuccessfully("Users with id: " + userId + " deleted");
+                    new UserResponse.UserDeletedSuccessfully("Users with id: " + userId + " successfully deleted");
 
             return UserResponse.mapResponseEntity(response);
 
