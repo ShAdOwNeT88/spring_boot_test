@@ -42,4 +42,13 @@ public class CreateUserRequestV1 {
     public void setAge(int age) {
         this.age = age;
     }
+
+    @Override
+    public String toString() {
+        return "CreateUserRequestV1{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }
