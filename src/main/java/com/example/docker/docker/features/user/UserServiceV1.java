@@ -2,12 +2,14 @@ package com.example.docker.docker.features.user;
 
 import com.example.docker.docker.features.user.dto.CreateUserRequestV1;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
+import com.example.docker.docker.features.user.dto.UserError;
 import com.example.docker.docker.features.user.entities.UserEntity;
+import io.vavr.control.Either;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceV1 {
@@ -17,25 +19,30 @@ public class UserServiceV1 {
 
     UserDtoV1 createUser(CreateUserRequestV1 userCreationRequest) {
         UserEntity userToSave = new UserEntity(userCreationRequest.getEmail(), userCreationRequest.getName(), userCreationRequest.getAge());
-            UserEntity savedUserEntity = userRepository.save(userToSave);
-            return savedUserEntity.toDto();
+        UserEntity savedUserEntity = userRepository.save(userToSave);
+        return savedUserEntity.toDto();
     }
 
-    ResponseEntity<UserResponse> requestDeleteUser(int userId) {
-        boolean userExist = userRepository.existsById(userId);
-        if (userExist) {
-            userRepository.deleteById(userId);
-            UserResponse.UserDeletedSuccessfully response =
-                    new UserResponse.UserDeletedSuccessfully("Users with id: " + userId + " successfully deleted");
-
-            return UserResponse.mapResponseEntity(response);
-
+    Either<UserError, Boolean> requestDeleteUser(int userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            try {
+                userRepository.deleteById(userId);
+                return Either.right(true);
+            } catch (Exception ex) {
+                return Either.left(
+                        new UserError(
+                                419,
+                                "Error while deleting user with id: " + userId + " with error: " + ex.getMessage())
+                );
+            }
         } else {
-            UserResponse.UserGenericError response =
-                    new UserResponse.UserGenericError("Error while deleting user with id: " + userId);
-
-            return UserResponse.mapResponseEntity(response);
-
+            return Either.left(
+                    new UserError(
+                            404,
+                            "User with id: " + userId + " not found"
+                    )
+            );
         }
     }
 

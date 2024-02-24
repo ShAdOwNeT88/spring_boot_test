@@ -2,12 +2,14 @@ package com.example.docker.docker.features.user;
 
 import com.example.docker.docker.features.user.dto.CreateUserRequestV1;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
+import com.example.docker.docker.features.user.dto.UserError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.vavr.control.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,22 +60,33 @@ public class UserController {
             value = {
                     @ApiResponse(
                             responseCode = "204",
-                            description = "User with id:{userId} successfully deleted",
-                            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserDtoV1.class))}
+                            description = "User with id:{userId} successfully deleted"
+                            //content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserDtoV1.class))}
                     ),
                     @ApiResponse(
-                            responseCode = "500",
-                            description = "Error while deleting user with id: {userId}",
-                            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.UserGenericError.class))}
+                            responseCode = "419",
+                            description = "Error while deleting user with id: {userId}"
+                            //content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.UserGenericError.class))}
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "User with id: {userId} not found"
+                            //content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.UserGenericError.class))}
                     )
             }
     )
     @DeleteMapping(path = "/users/{userId}/delete")
-    public ResponseEntity<UserResponse> deleteUser(
+    public ResponseEntity<?> deleteUser(
             @Parameter(description = "id of user to be deleted")
             @PathVariable("userId") String userId
     ) {
-        return userService.requestDeleteUser(Integer.parseInt(userId));
+        Either<UserError, Boolean> result = userService.requestDeleteUser(Integer.parseInt(userId));
+
+        if (result.isLeft()) {
+            return ResponseEntity.status(result.getLeft().getCode()).body(result.getLeft().getMessage());
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted user with id: " + userId);
+        }
     }
 }
  
