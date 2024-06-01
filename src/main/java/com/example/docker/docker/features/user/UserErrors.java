@@ -13,7 +13,7 @@ public class UserErrors {
 
     public static class ImpossibleToParseBirthdate extends GenericError {
         public ImpossibleToParseBirthdate() {
-            super(433, "impossible to parse birthdate");
+            super(433, "Impossible to parse date of birth");
         }
     }
 

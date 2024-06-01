@@ -32,6 +32,10 @@ public class UserController {
                             responseCode = "200",
                             description = "User created",
                             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserDtoV1.class))}
+                    ),
+                    @ApiResponse(
+                            responseCode = "433",
+                            description = "Impossible to parse date of birth"
                     )
             }
     )
