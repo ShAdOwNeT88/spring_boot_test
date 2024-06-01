@@ -21,6 +21,8 @@ public class UserServiceV1 {
         UserEntity userToSave = new UserEntity(userCreationRequest.getEmail(), userCreationRequest.getName(), userCreationRequest.getAge());
         UserEntity savedUserEntity = userRepository.save(userToSave);
         return savedUserEntity.toDto();
+            return Either.right(savedUserEntity.toDto());
+            return Either.left(new UserErrors.ImpossibleToParseBirthdate());
     }
 
     Either<UserError, Boolean> requestDeleteUser(int userId) {
