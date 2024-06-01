@@ -1,5 +1,6 @@
 package com.example.docker.docker.features.user;
 
+import com.example.docker.docker.features.errorscommon.GenericError;
 import com.example.docker.docker.features.user.dto.CreateUserRequestV1;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
 import com.example.docker.docker.features.user.dto.UserError;
@@ -35,9 +36,13 @@ public class UserController {
             }
     )
     @PostMapping(path = "/users/add")
-    public ResponseEntity<UserDtoV1> createUser(@RequestBody CreateUserRequestV1 createUserRequest) {
-        UserDtoV1 savedUser = userService.createUser(createUserRequest);
-        return new ResponseEntity<>(savedUser, HttpStatus.OK);
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequestV1 createUserRequest) {
+        Either<GenericError, UserDtoV1> result = userService.createUser(createUserRequest);
+        if (result.isLeft()) {
+            return ResponseEntity.status(result.getLeft().getCode()).body(result.getLeft().getMessage());
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(result.get());
+        }
     }
 
     @Operation(summary = "Get all the users")
@@ -89,4 +94,3 @@ public class UserController {
         }
     }
 }
- 
