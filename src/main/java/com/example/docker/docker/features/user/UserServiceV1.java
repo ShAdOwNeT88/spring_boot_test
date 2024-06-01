@@ -1,5 +1,6 @@
 package com.example.docker.docker.features.user;
 
+import com.example.docker.docker.features.errorscommon.GenericError;
 import com.example.docker.docker.features.user.dto.CreateUserRequestV1;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
 import com.example.docker.docker.features.user.dto.UserError;
@@ -8,6 +9,9 @@ import io.vavr.control.Either;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,12 +21,17 @@ public class UserServiceV1 {
     @Autowired
     UserRepository userRepository;
 
-    UserDtoV1 createUser(CreateUserRequestV1 userCreationRequest) {
-        UserEntity userToSave = new UserEntity(userCreationRequest.getEmail(), userCreationRequest.getName(), userCreationRequest.getAge());
-        UserEntity savedUserEntity = userRepository.save(userToSave);
-        return savedUserEntity.toDto();
+    Either<GenericError, UserDtoV1> createUser(CreateUserRequestV1 userCreationRequest) {
+        OffsetDateTime dob;
+        try {
+            dob = OffsetDateTime.parse(userCreationRequest.getDateOfBirth());
+            long calculatedAge = ChronoUnit.YEARS.between(dob, OffsetDateTime.now());
+            UserEntity userToSave = new UserEntity(userCreationRequest.getEmail(), userCreationRequest.getName(), dob, calculatedAge);
+            UserEntity savedUserEntity = userRepository.save(userToSave);
             return Either.right(savedUserEntity.toDto());
+        } catch (DateTimeParseException ex) {
             return Either.left(new UserErrors.ImpossibleToParseBirthdate());
+        }
     }
 
     Either<UserError, Boolean> requestDeleteUser(int userId) {

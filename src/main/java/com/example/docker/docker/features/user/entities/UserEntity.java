@@ -3,6 +3,8 @@ package com.example.docker.docker.features.user.entities;
 import com.example.docker.docker.features.user.dto.UserDtoV1;
 import jakarta.persistence.*;
 
+import java.time.OffsetDateTime;
+
 @Entity(name = "User")
 @Table(name = "users")
 public class UserEntity {
@@ -13,15 +15,18 @@ public class UserEntity {
     private String email;
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "date_of_birth", nullable = false)
+    private OffsetDateTime dateOfBirth;
     @Column(name = "age", nullable = false)
-    private int age;
+    private long age;
 
     public UserEntity() {
     }
 
-    public UserEntity(String email, String name, int age) {
+    public UserEntity(String email, String name, OffsetDateTime dateOfBirth, long age) {
         this.email = email;
         this.name = name;
+        this.dateOfBirth = dateOfBirth;
         this.age = age;
     }
 
@@ -49,7 +54,7 @@ public class UserEntity {
         this.name = name;
     }
 
-    public int getAge() {
+    public long getAge() {
         return age;
     }
 
@@ -57,7 +62,15 @@ public class UserEntity {
         this.age = age;
     }
 
+    public OffsetDateTime getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(OffsetDateTime dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public UserDtoV1 toDto() {
-        return new UserDtoV1(this.id, this.email, this.name, this.age);
+        return new UserDtoV1(this.id, this.email, this.name, this.dateOfBirth.toString(), this.age);
     }
 }
